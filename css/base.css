@@ -1,0 +1,96 @@
+*,
+*::after,
+*::before {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: transparent;
+}
+
+html {
+	width: 100vw;
+	scroll-behavior: smooth;
+	height: auto;
+	min-height: 100%;
+}
+
+body {
+	color: var(--first-color-text);
+	background: var(--color-bg);
+	position: relative;
+	width: 100vw;
+	height: auto;
+	min-height: 100dvh;
+	overflow-x: hidden;
+	font-size: 16px;
+}
+
+body::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 2;
+	background-image: url(../images/body/pattern.webp);
+	opacity: 1;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}
+body::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 3;
+	background: rgba(26, 26, 30, 0.8);
+	opacity: 1;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}
+
+@media screen and (max-width: 1439px) {
+	.container {
+		position: relative;
+		z-index: 5;
+		padding-bottom: 9.14vw;
+		width: 100vw;
+		height: auto;
+		min-height: 100dvh;
+	}
+	.container::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 2;
+		background-image: url(../images/body/image_bg_mob.webp);
+		opacity: 1;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+	}
+}
+@media screen and (min-width: 1440px) {
+	.container {
+		position: relative;
+		z-index: 5;
+		padding-bottom: 5.95vw;
+		width: 100vw;
+		height: auto;
+		min-height: 100dvh;
+	}
+	.container::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 3;
+		background-image: url(../images/body/image_bg_desk.webp);
+		opacity: 1;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+	}
+}
