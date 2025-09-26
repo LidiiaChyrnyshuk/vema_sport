@@ -49,8 +49,6 @@ body::before {
 	background-size: cover;
 	background-position: center;
 }
-
-@media screen and (max-width: 1439px) {
 	.container {
 		position: relative;
 		z-index: 5;
@@ -70,6 +68,28 @@ body::before {
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: center;
+	}
+
+@media screen and (min-width:360px) and (max-width: 1439px) {
+	.container {
+		position: relative;
+		z-index: 5;
+		padding-bottom: 9.14vw;
+		width: 100vw;
+		height: auto;
+		min-height: 100dvh;
+	}
+	.container::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 2;
+		background-image: url(../images/body/image_bg_mob.webp);
+		opacity: 1;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center 5.5vw;
 	}
 }
 @media screen and (min-width: 1440px) {
