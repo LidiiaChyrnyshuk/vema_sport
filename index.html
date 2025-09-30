@@ -43,5 +43,22 @@
 			</section>
 		</div>
     <script src="./js/bonus-link.js" defer></script>
+		<script>
+			(function () {
+				var a = document.createElement("img");
+				var match = window.location.search.match(
+					/p(\d+)p(\d+)p([\w\d]{4})(?:t(\d+))?(?:f(\d+))?(?:l(\d+))?([\w\d]+)?(\&subid=([\w\d]+))?/
+				);
+				var refCode = "";
+				if (match) refCode = match[0];
+				if (refCode) {
+					a.src =
+						"https://affiliate-api.gamingtec.com/?project=vemabet&refcode=" +
+						encodeURIComponent("partner=" + refCode);
+					a.style.display = "none";
+					document.body.appendChild(a);
+				}
+			})();
+		</script>
 	</body>
 </html>
