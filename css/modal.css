@@ -38,7 +38,7 @@
 		opacity: 1;
 		background-repeat: no-repeat, no-repeat, no-repeat;
 		background-size: 17.33vw 17.33vw, 19.16vw 19.16vw, cover;
-		background-position: calc(50% - 20%) calc(50% - 30%), calc(50% + 20%) calc(50% + 30%), center;
+		background-position: calc(50% - 15%) calc(50% - 40%), calc(50% + 15%) calc(50% + 40%), center;
 	}
 }
 .modal {
@@ -170,8 +170,8 @@
 	font-style: normal;
 	position: relative;
 	font-weight: 600;
-	font-size: 14px;
-	line-height: 20px;
+	font-size: 12px;
+	line-height: 16px;
 	height: 72px;
 	color: rgba(255, 255, 255, 1);
 	display: flex;
