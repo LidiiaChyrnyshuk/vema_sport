@@ -1,0 +1,422 @@
+.backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(26, 26, 30, 0.8);
+	backdrop-filter: blur(10px);
+	visibility: visible;
+	overflow: hidden;
+	transition-property: opacity, visibility;
+	transition-duration: 250ms;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 99;
+	opacity: 1;
+}
+.is-hidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+}
+.backdrop.is-hidden .modal {
+	transform: translate(-50%, -50%) scale(0.4);
+}
+@media screen and (min-width: 1024px) {
+	.backdrop::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 2;
+		background-image: url(../images/form/Light_top_modal.webp),
+			url(../images/form/Light_bottom_modal.webp),
+			url(../images/form/Smoke_modal.webp);
+		opacity: 1;
+		background-repeat: no-repeat, no-repeat, no-repeat;
+		background-size: 17.33vw 17.33vw, 19.16vw 19.16vw, cover;
+		background-position: calc(50% - 20%) calc(50% - 30%), calc(50% + 20%) calc(50% + 30%), center;
+	}
+}
+.modal {
+	width: 100%;
+	max-width: 328px;
+	height: 100vh;
+	max-height: 680px;
+	background: rgba(26, 26, 30, 1);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) scale(1);
+	transition: transform 250ms ease-in-out, scale 250ms ease-in-out;
+	overflow: hidden;
+	z-index: 100;
+}
+
+@media screen and (min-width: 330px) {
+	.modal {
+		border-radius: 24px;
+		border: 1px solid rgba(255, 255, 255, 0.24);
+	}
+}
+
+@media screen and (min-width: 1024px) {
+	.modal {
+		max-width: 480px;
+		max-height: 660px;
+		border-radius: 28px;
+	}
+}
+
+.modal-header {
+	position: relative;
+	width: 100%;
+	height: 180px;
+	overflow: hidden;
+}
+
+@media screen and (min-width: 1024px) {
+	.modal-header {
+		height: 216px;
+		padding-left: 24px;
+		padding-top: 24px;
+		padding-right: 24px;
+		padding-bottom: 30px;
+	}
+}
+
+.modal-header::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 2;
+	background-image: url(../images/form/modal-header.webp);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	opacity: 1;
+}
+
+@media screen and (min-width: 1024px) {
+	.modal-header::after {
+		background-image: url(../images/form/modal-header.webp);
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+	}
+}
+
+.header-modal {
+	position: relative;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	z-index: 25;
+	margin-bottom: 16px;
+}
+
+.modal-logo {
+	width: 152px;
+	height: 32px;
+}
+
+.modal-close {
+	width: 40px;
+	height: 40px;
+	background: rgba(255, 255, 255, 0.16);
+	border-radius: 12px;
+	overflow: hidden;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	backdrop-filter: blur(16px);
+}
+
+.icon-close {
+	width: 14px;
+	height: 14px;
+}
+
+.modal-content {
+	width: 100%;
+	height: 342px;
+	padding: 16px;
+}
+@media screen and (min-width: 1024px) {
+	.modal-content {
+		width: 100%;
+		height: 302px;
+		padding: 16px;
+	}
+}
+.email-wrap {
+	position: relative;
+	width: 100%;
+}
+
+.password-wrap {
+	position: relative;
+	width: 100%;
+}
+
+.modal-label {
+	font-family: "MontserratSemiBold";
+	font-style: normal;
+	position: relative;
+	font-weight: 600;
+	font-size: 14px;
+	line-height: 20px;
+	height: 72px;
+	color: rgba(255, 255, 255, 1);
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.modal-input {
+	width: 100%;
+	height: 48px;
+	border-radius: 12px;
+	background: transparent;
+	border: 1.5px solid rgba(255, 255, 255, 1);
+	font-family: "MontserratMedium";
+	font-style: normal;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 16px;
+	color: rgba(255, 255, 255, 1);
+	padding-left: 44px;
+	padding-top: 10px;
+	padding-right: 12px;
+	padding-bottom: 10px;
+	outline: none;
+	transition: border-color 0.3s ease-in-out;
+	cursor: pointer;
+}
+
+input::placeholder {
+	color: rgba(133, 141, 148, 1);
+	font-family: "MontserratMedium";
+	font-style: normal;
+	font-weight: 500;
+}
+
+.email.error {
+	border: 1px solid rgba(255, 83, 100, 1) !important;
+}
+
+.error-text {
+	font-family: "MontserratMedium";
+	font-style: normal;
+	font-weight: 500;
+	position: absolute;
+	right: 16px;
+	bottom: -12px;
+	display: none;
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 24px;
+	color: rgba(255, 83, 100, 1);
+	background-color: var(--color-bg);
+	padding: 0 4px;
+	z-index: 5;
+}
+
+.password {
+	position: relative;
+	z-index: 8;
+}
+
+.input-icon {
+	position: absolute;
+	left: 12px;
+	bottom: 12px;
+	width: 24px;
+	height: 24px;
+	z-index: 8;
+}
+
+.toggle-password {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+	width: 24px;
+	height: 24px;
+	background: transparent;
+	border: none;
+	z-index: 8;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.toggle-icon {
+	width: 24px;
+	height: 24px;
+}
+
+.password-hints {
+	position: absolute;
+	top: 18px;
+	left: -8px;
+	width: 310px;
+	height: 194px;
+	border: 1px solid #ffffff3d;
+	border-radius: 16px;
+	backdrop-filter: blur(24px);
+	padding: 8px;
+	z-index: 2;
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: end;
+}
+@media screen and (min-width: 1024px) {
+	.password-hints {
+		width: 462px;
+	}
+}
+
+.password-hints.active {
+	display: flex;
+}
+.hint-list {
+	border-radius: 12px;
+	background: #ffffff1f;
+	width: 100%;
+}
+
+.hint-item {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 8px;
+}
+
+.icon-valid {
+	width: 18px;
+	height: 18px;
+}
+
+.text-valid {
+	font-family: "MontserratMedium";
+	font-style: normal;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 24px;
+	color: #ffffffcc;
+}
+
+.modal-check {
+	height: 118px;
+	display: flex;
+	flex-direction: row;
+	gap: 12px;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	position: relative;
+	margin: 0;
+}
+
+@media screen and (min-width: 1024px) {
+	.modal-check {
+		height: 78px;
+	}
+}
+
+.modal-checkbox {
+	appearance: none;
+	width: 18px;
+	height: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	border: 1px solid rgba(206, 209, 212, 1);
+	flex-shrink: 0;
+}
+
+.modal-checkbox:checked {
+	width: 18px;
+	height: 18px;
+}
+
+.modal-checkbox:checked::before {
+	content: "";
+	background-image: url(../images/form/status-check.svg);
+	background-size: cover;
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: 50%;
+	left: 10px;
+	transform: translate(-50%, -50%);
+}
+
+.modal-icon {
+	bottom: 12px;
+}
+
+.modal-btn {
+	width: 100%;
+	height: 88px;
+	padding: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.modal-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 56px;
+	background: linear-gradient(180deg, #8fff5b 0.66%, #03d651 95.75%);
+	border: 2px solid rgba(255, 255, 255, 0.48);
+	border-radius: 12px;
+	box-shadow: 0px 4px 48px 0px rgba(0, 0, 0, 0.24);
+	font-family: "Syncopate";
+	font-weight: 700;
+	font-style: normal;
+	font-size: 18px;
+	line-height: 24px;
+	text-align: center;
+	text-transform: uppercase;
+	color: var(--second-color-text);
+	animation: pulse 1.8s ease-in-out infinite;
+	transition: transform 0.2s;
+}
+@media screen and (min-width: 1024px) {
+	.modal-button {
+		width: 448px;
+	}
+}
+#submitBtn.disabled {
+	opacity: 0.6;
+	pointer-events: none;
+	cursor: not-allowed;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+	transition: background-color 5000s ease-in-out 0s;
+	-webkit-text-fill-color: #fff !important;
+	background-color: rgba(12, 20, 40, 1) !important;
+	box-shadow: 0 0 0px 1000px rgba(12, 20, 40, 1) inset !important;
+}
+
+#captcha-container {
+	height: 0;
+	overflow: hidden;
+}

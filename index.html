@@ -17,9 +17,19 @@
 		/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Vema</title>
+		<script>
+			window.__REDIRECT_LINK = "%%redirect_to%%";
+		</script>
 		<link rel="stylesheet" href="./css/normalize.css" />
 		<link rel="stylesheet" href="./css/main.css" />
     <script src="./js/language.js" defer></script>
+				<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+		<script type="module" src="./js/global-params-utils.js"></script>
+		<script type="module" src="./js/modal.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -32,15 +42,159 @@
 				<p class="first-title" data-translate="firstTitle">BONUS</p>
 				<h1 class="second-title" data-translate="secondTitle">up to €3,000</h1>
 				<p class="bonus" data-translate="bonus">+ €100 free bets</p>
-				<a
+				<button
 					class="button"
-					href="#"
-					data-bonus
+					data-modal-open
 					rel="noopener noreferrer"
 					data-translate="heroButton"
-					>Claim bonus</a
+					>Claim bonus</button
 				>
 			</section>
+			<!--MODAL WINDOW-->
+			<div class="backdrop is-hidden" data-modal>
+				<form class="modal" id="registrationForm">
+					<div class="modal-header">
+						<div class="header-modal">
+							<!-- <div class="header-logo">
+					<img src="./images/header/Logo.svg" alt="logo" />
+				</div> -->
+							<!-- <button class="modal-close" type="button" data-modal-close>
+								<img
+									class="icon-close"
+									src="./images/form/close.svg"
+									alt="close"
+									width="14"
+									height="14"
+								/>
+							</button> -->
+						</div>
+					</div>
+					<div class="modal-content">
+						<div class="email-wrap">
+							<label class="modal-label">
+								<span data-translate="labelEmail">Email*</span>
+								<input
+									class="modal-input email"
+									type="email"
+									name="email"
+									placeholder=""
+									data-translate-placeholder="placeholderEmail"
+									value=""
+									required
+								/>
+								<img
+									class="input-icon modal-icon"
+									src="./images/form/email.svg"
+									alt="Letter icon"
+									width="24"
+									height="24"
+								/>
+							</label>
+							<p class="error-text" data-translate="emailError">
+								Incorrect email format
+							</p>
+						</div>
+						<div class="password-wrap">
+							<label class="modal-label password-container">
+								<span data-translate="labelPassword">Password*</span>
+								<input
+									class="modal-input password"
+									type="password"
+									name="password"
+									placeholder=""
+									data-translate-placeholder="placeholderPassword"
+									value=""
+									required
+								/>
+								<img
+									class="input-icon modal-icon"
+									src="./images/form/lock.svg"
+									alt="Lock icon"
+									width="24"
+									height="24"
+								/>
+								<button
+									type="button"
+									class="toggle-password"
+									aria-label="Toggle password"
+								>
+									<img
+										class="toggle-icon"
+										src="./images/form/eye-closed.svg"
+										alt="Toggle visibility"
+										width="24"
+										height="24"
+									/>
+								</button>
+							</label>
+							<!-- Валідаційні підказки -->
+							<div class="password-hints" id="passwordHint">
+								<div class="hint-list">
+									<div class="hint-item" data-check="length">
+										<img
+											class="icon-valid"
+											src="./images/form/status_error.svg"
+											alt="status_error"
+										/>
+										<span class="text-valid" data-translate="quantityCharacter"
+											>Contain at least 6 characters</span
+										>
+									</div>
+									<div class="hint-item" data-check="uppercase">
+										<img
+											class="icon-valid"
+											src="./images/form/status_error.svg"
+											alt="status_error"
+										/>
+										<span class="text-valid" data-translate="uppercaseCharacter"
+											>Include at least 1 uppercase letter</span
+										>
+									</div>
+									<div class="hint-item" data-check="digit">
+										<img
+											class="icon-valid"
+											src="./images/form/status_error.svg"
+											alt="status_error"
+										/>
+										<span class="text-valid" data-translate="numberCharacter"
+											>Include at least 1 number</span
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+						<label class="modal-check modal-label">
+							<input
+								class="modal-checkbox"
+								type="checkbox"
+								name="terms"
+								required
+							/>
+							<span>
+								<span data-translate="checkbox"
+									>By ticking this box to register for this website, the user declares to be over 18 years old and to have read, understood and accepted </span
+								>
+								<a
+									href="https://weiss.bet/terms-and-conditions"
+									data-translate="terms"
+									>the Terms and Conditions.</a
+								>.
+							</span>
+						</label>
+					</div>
+					<div id="captcha-container"></div>
+					<div class="modal-btn">
+						<button
+							id="submitBtn"
+							class="modal-button"
+							type="submit"
+							data-translate="modalBtn"
+						>
+							Claim bonus
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
     <script src="./js/bonus-link.js" defer></script>
 		<script>
