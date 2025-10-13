@@ -89,7 +89,7 @@ body::before {
 		opacity: 1;
 		background-repeat: no-repeat;
 		background-size: cover;
-		background-position: center 5.5vw;
+		background-position: center 1.5vw;
 	}
 }
 @media screen and (min-width: 1440px) {

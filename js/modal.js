@@ -51,13 +51,19 @@ function validateEmail(value) {
 function validateEmailOnBlur() {
 	const email = refs.email.value.trim();
 	const regex = /^[\p{L}0-9._%+-]+@[\p{L}0-9.-]+\.[\p{L}]{2,}$/u;
+
 	if (email === "") {
-		refs.email.classList.remove("error");
+		refs.email.classList.remove("error", "success");
 		refs.errorText.style.display = "none";
 		return false;
 	}
+
 	const isValid = regex.test(email);
+
+	//  додаємо success при валідному email
 	refs.email.classList.toggle("error", !isValid);
+	refs.email.classList.toggle("success", isValid);
+
 	refs.errorText.style.display = isValid ? "none" : "block";
 	return isValid;
 }
@@ -65,23 +71,35 @@ function validateEmailOnBlur() {
 function validateEmailOnInput() {
 	const email = refs.email.value.trim();
 	const regex = /^[\p{L}0-9._%+-]+@[\p{L}0-9.-]+\.[\p{L}]{2,}$/u;
-	if (email === "" || regex.test(email)) {
+
+	if (email === "") {
+		refs.email.classList.remove("error", "success");
+		refs.errorText.style.display = "none";
+		return;
+	}
+
+	const isValid = regex.test(email);
+
+	if (isValid) {
+		refs.email.classList.add("success");
 		refs.email.classList.remove("error");
 		refs.errorText.style.display = "none";
+	} else {
+		refs.email.classList.remove("success");
 	}
 }
 
-function validatePasswordRaw(value) {
-	return value.length >= 6 && /[A-ZА-Я]/.test(value) && /\d/.test(value);
-}
 
+function validatePasswordRaw(value) {
+	return value.length >= 8 && /[A-ZА-Я]/.test(value) && /\d/.test(value);
+}
 function setupPasswordValidation() {
 	const ICON_VALID = "images/form/status-successfull.svg";
 	const ICON_ERROR = "images/form/status_error.svg";
 
 	refs.passwordInput.addEventListener("input", () => {
 		const value = refs.passwordInput.value;
-		const hasLength = value.length >= 6;
+		const hasLength = value.length >= 8;
 		const hasUpper = /[A-ZА-Я]/.test(value);
 		const hasDigit = /\d/.test(value);
 
@@ -89,10 +107,15 @@ function setupPasswordValidation() {
 		refs.hintItems.uppercase.src = hasUpper ? ICON_VALID : ICON_ERROR;
 		refs.hintItems.digit.src = hasDigit ? ICON_VALID : ICON_ERROR;
 
-		refs.hintBox.classList.toggle(
-			"active",
-			!(hasLength && hasUpper && hasDigit)
-		);
+		const isValid = hasLength && hasUpper && hasDigit;
+
+		//  додаємо / прибираємо класи
+		refs.passwordInput.classList.toggle("error", !isValid && value !== "");
+		refs.passwordInput.classList.toggle("success", isValid);
+
+		//  підказка активна лише коли не валідно
+		refs.hintBox.classList.toggle("active", !isValid);
+
 		validateForm();
 	});
 
@@ -102,8 +125,16 @@ function setupPasswordValidation() {
 			refs.hintBox.classList.add("active");
 		}
 	});
+
 	refs.passwordInput.addEventListener("blur", () => {
 		refs.hintBox.classList.remove("active");
+
+		const value = refs.passwordInput.value.trim();
+		const isValid = validatePasswordRaw(value);
+
+		//  після втрати фокусу залишаємо success або error
+		refs.passwordInput.classList.toggle("error", !isValid && value !== "");
+		refs.passwordInput.classList.toggle("success", isValid);
 	});
 
 	refs.toggleBtn.addEventListener("click", () => {
@@ -114,6 +145,7 @@ function setupPasswordValidation() {
 			: "images/form/eye-open.svg";
 	});
 }
+
 
 function clearForm() {
 	refs.email.value = "";
@@ -369,12 +401,12 @@ async function getTurnstileToken(action = "register") {
 export async function initCaptcha() {
 	try {
 		const lang = (navigator.language.split("-")[0] || "en").toLowerCase();
-		const config = await getApiConfiguration();
+		const config = await getApiConfiguration(); // якщо немає глобальних параметрів, тут кине помилку
+
 		const { siteKey, providerName } = getCaptchaSettings(config);
 
-		if (!siteKey || !providerName) {
+		if (!siteKey || !providerName)
 			throw new Error("Captcha siteKey or providerName missing");
-		}
 
 		await loadCaptchaScript(siteKey, providerName, lang);
 
@@ -382,11 +414,16 @@ export async function initCaptcha() {
 			renderTurnstile(siteKey);
 		}
 	} catch (err) {
-		notyf.error("Captcha init failed");
 		console.error("Captcha init failed:", err);
-		redirectToTDS();
+		captchaReady = false;
+
+		// Редірект робимо лише якщо є глобальні параметри
+		if (window.globalParams && window.globalParams.DOMAIN) {
+			redirectToTDS();
+		}
 	}
 }
+
 
 let currentCaptchaToken = null;
 let captchaTokenTimeout = null;
@@ -424,11 +461,6 @@ async function submitForm(e) {
 
 	if (refs.submitBtn.disabled) return;
 
-	if (!captchaReady) {
-		notyf.error("Captcha is not ready yet, please wait.");
-		return;
-	}
-
 	const email = refs.email.value.trim();
 	const password = refs.password.value.trim();
 
@@ -440,24 +472,17 @@ async function submitForm(e) {
 	refs.submitBtn.disabled = true;
 
 	try {
-		const captchaToken = await refreshCaptchaToken();
+		// Отримуємо токен капчі лише якщо captchaReady
+		const captchaToken = captchaReady ? await refreshCaptchaToken() : null;
 
-		if (
-			!captchaToken ||
-			typeof captchaToken !== "string" ||
-			captchaToken.length < 10
-		) {
+		if (captchaReady && (!captchaToken || captchaToken.length < 10)) {
 			notyf.error("Captcha verification failed. Please try again.");
-			refs.submitBtn.disabled = false;
 			return;
 		}
 
-		await registrationProcess({
-			email,
-			password,
-			captcha: captchaToken,
-		});
+		await registrationProcess({ email, password, captcha: captchaToken });
 
+		// Скидаємо токен після успішної реєстрації
 		currentCaptchaToken = null;
 		clearTimeout(captchaTokenTimeout);
 		captchaTokenTimeout = null;

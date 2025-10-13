@@ -1,7 +1,9 @@
 export const DOMAIN_NOT_DEFINED = "DOMAIN_NOT_DEFINED";
 export const UNDEFINED_ERROR = "UNDEFINED_ERROR";
 
+// =======================
 // Глобальні параметри
+// =======================
 export const getGlobalParams = () => {
 	return (
 		window.globalParams ||
@@ -10,7 +12,9 @@ export const getGlobalParams = () => {
 	);
 };
 
-// Генерує посилання з урахуванням параметрів
+// =======================
+// Генерація посилань з параметрами
+// =======================
 export const createDomainLink = (path) => {
 	const gp = getGlobalParams();
 	const domain = gp?.DOMAIN;
@@ -39,7 +43,9 @@ export const createDomainLinkSafe = (path) => {
 	}
 };
 
+// =======================
 // API конфігурація
+// =======================
 export const getApiConfiguration = async () => {
 	const gp = getGlobalParams();
 	const domain = gp?.DOMAIN;
@@ -55,14 +61,14 @@ export const getApiConfiguration = async () => {
 	return await response.json();
 };
 
+// =======================
 // Auth конфігурація
+// =======================
 export async function getAuthConfiguration() {
 	const gp = getGlobalParams();
-	const domain = gp && gp.DOMAIN;
+	const domain = gp?.DOMAIN;
 
-	if (!domain) {
-		throw ["DOMAIN_NOT_DEFINED"];
-	}
+	if (!domain) throw [DOMAIN_NOT_DEFINED];
 
 	const url = new URL("/api/v1/configuration/auth", domain).toString();
 
@@ -90,7 +96,9 @@ export async function getAuthConfiguration() {
 	return config;
 }
 
-// Отримати посилання на редірект (TDS)
+// =======================
+// Отримати редірект посилання
+// =======================
 export const getRedirectLink = () => {
 	const link = window.__REDIRECT_LINK;
 	return typeof link === "string" && link.startsWith("http") ? link : null;
@@ -103,7 +111,9 @@ export const redirectToTDS = () => {
 	}
 };
 
+// =======================
 // Надіслати запит на реєстрацію
+// =======================
 export const sendRegistration = ({ email, password, captcha }) => {
 	const gp = getGlobalParams();
 	const domain = gp?.DOMAIN;
@@ -149,7 +159,9 @@ export const sendRegistration = ({ email, password, captcha }) => {
 	});
 };
 
+// =======================
 // Редірект до авторизації
+// =======================
 export const redirectToAuth = ({ token, type }) => {
 	const gp = getGlobalParams();
 	const domain = gp?.DOMAIN;
@@ -165,13 +177,17 @@ export const redirectToAuth = ({ token, type }) => {
 
 	window.location.href = url;
 };
-
-// Реєстраційний процес з обробкою помилок і редіректом
 export const registrationProcess = async ({ email, password, captcha }) => {
-	const result = await sendRegistration({ email, password, captcha }).catch(
-		(reason) => {
-			const errors = Array.isArray(reason) ? reason : [];
+	const gp = getGlobalParams();
 
+	// Якщо є DOMAIN — пробуємо API реєстрацію
+	if (gp?.DOMAIN) {
+		try {
+			const result = await sendRegistration({ email, password, captcha });
+			redirectToAuth(result);
+			return;
+		} catch (reason) {
+			const errors = Array.isArray(reason) ? reason : [];
 			const redirectErrors = [
 				"EMAIL_ALREADY_TAKEN",
 				"PHONE_NUMBER_TAKEN",
@@ -184,12 +200,44 @@ export const registrationProcess = async ({ email, password, captcha }) => {
 				!Array.isArray(reason) ||
 				errors.some((err) => redirectErrors.includes(err))
 			) {
-				redirectToTDS();
+				console.warn("Redirecting due to API error:", reason);
+			} else {
+				throw reason;
 			}
-
-			throw reason;
 		}
+	}
+
+	// ==========================
+	// Fallback → простий редірект без даних
+	// ==========================
+  const search = window.location.search || "";
+	const match = search.match(
+		/p(\d+)p(\d+)p([\w\d]{4})(?:t(\d+))?(?:f(\d+))?(?:l(\d+))?([\w\d]+)?(?:&subid=([\w\d]+))?/
 	);
 
-	redirectToAuth(result);
+	let newSearch = search;
+	if (match && match[0] && !search.includes("partner=")) {
+		newSearch = search.replace(match[0], "partner=" + match[0]);
+	}
+
+	const baseUrl = "https://vb.staaqwe.com/pt/";
+	let finalUrl = baseUrl + newSearch + "#registration";
+
+	// Додаємо тільки email як GET-параметр (якщо він є)
+	if (email) {
+		const encodedEmail = encodeURIComponent(email);
+		// потрібно вставляти параметри перед фрагментом (#). finalUrl зараз містить #registration
+		// тому розділимо finalUrl на частину до '#' і після
+		const [beforeHash, hash = ""] = finalUrl.split("#");
+		const separator = beforeHash.includes("?") ? "&" : "?";
+		finalUrl =
+			beforeHash +
+			separator +
+			"email=" +
+			encodedEmail +
+			(hash ? "#" + hash : "");
+	}
+
+	console.log("Redirecting to:", finalUrl);
+	window.location.href = finalUrl;
 };
